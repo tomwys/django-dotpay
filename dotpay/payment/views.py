@@ -5,6 +5,8 @@ from dotpay.payment.models import DotResponse
 from django.http import HttpResponse
 from dotpay.payment.util import DOTPAY_SERVERS
 
+logger = logging.getLogger(__name__)
+
 @csrf_exempt
 def receiver(request):
     if request.POST:
@@ -28,6 +30,7 @@ def receiver(request):
                                                                 t_id=vars.pop('t_id'),
                                                                 defaults=vars)
             except Exception, e:
+                logger.error("Dotpay receiver error.", exc_info=True)
                 return HttpResponse("ERR", status=500)
             else:
                 return HttpResponse("OK", status=200)
